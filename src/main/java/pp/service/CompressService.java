@@ -114,12 +114,14 @@ public class CompressService implements SmmService {
             File compressedFile = compressFile(prop, downloadedFile.getAbsolutePath());
 
             //upload file
+            //path at bucket
             String pathAndName = String.format("%s/%s", id, compressedFile.getName());
+            //upload
             fileStore.UploadFile(BucketName.PROFILE_VIDEO.getBucketName(), pathAndName, compressedFile);
 
             //generate download link
             String downloadLink = fileStore.getDownloadLink(BucketName.PROFILE_VIDEO.getBucketName(), pathAndName);
-            System.out.println(downloadLink);
+//            System.out.println(downloadLink);
             // TODO: 19/08/2020   send mail with download + (? prop log )
             sendMail.SendFromGmail("toledoomer@gmail.com" , "OmerNLP123!", downloadLink);
         });
