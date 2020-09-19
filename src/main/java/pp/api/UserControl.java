@@ -1,12 +1,13 @@
 package pp.api;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pp.model.CompProps;
 import pp.model.UserSMM;
+import pp.service.CompressService;
 import pp.service.UserService;
 
 import javax.validation.Valid;
@@ -19,11 +20,17 @@ import java.util.UUID;
 public class UserControl {
 
     public final UserService userService;
+    public final CompressService compressService;
 
     @Autowired
-    public UserControl(UserService userService) {
+    public UserControl(UserService userService, CompressService compressService) {
         this.userService = userService;
+        this.compressService = compressService;
     }
+
+//    public UserControl(UserService userService) {
+//        this.userService = userService;
+//    }
 
     @GetMapping(value = "/exist")
     public int ContainsMail(@Valid @NonNull @RequestBody UserSMM userSMM) {
@@ -34,6 +41,7 @@ public class UserControl {
     public List<UserSMM> getAllUsers() {
         return userService.getAllUsers();
     }
+
     @GetMapping(value = "/first")
     public UserSMM getFirstUsers() {
         return userService.getAllUsers().get(0);
@@ -53,26 +61,35 @@ public class UserControl {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public void uploadVideo(
-                        @PathVariable("id") UUID uuid,
-                            @RequestParam("file") MultipartFile multipartFile) {
+            @PathVariable("id") UUID uuid,
+            @RequestParam("file") MultipartFile multipartFile) {
 
         userService.UploadVideo(uuid, multipartFile);
     }
 
 
-    @GetMapping(
-           "{id}/video/download"
-    )
-    public String downloadVideo(
-            @PathVariable("id") UUID uuid) {
+//    @GetMapping("{id}/video/download")
+//    public void downloadVideo(
+//            @PathVariable("id") UUID uuid) {
+//
+//        userService.download(uuid);
+//    }
 
-        return userService.downloadVideo(uuid);
+
+    @PostMapping("{id}/video/compress")
+    public void Compress(@PathVariable("id") UUID uuid,
+                         @Valid @NonNull @RequestBody CompProps prop) {
+        UserSMM user = userService.getUser(uuid);
+        System.out.println(prop.toString());
+        compressService.Compress(prop, uuid);
+
     }
+
 
     @PostMapping(value = "/connect")
     public void ConnectUser(@RequestParam("email") String email,
                             @RequestParam("password") String password) {
-        userService.ConnectUser(email,password);
+        userService.ConnectUser(email, password);
 
     }
 
@@ -81,6 +98,7 @@ public class UserControl {
         userService.DisconnectUser(uuid);
 
     }
+
 
 }
 

@@ -17,7 +17,9 @@ public class CombProp  extends  BasicProps{
                     @JsonProperty("ins") LinkedList<String> ins,
                     @JsonProperty("audio")String audio,
                     @JsonProperty("mute")boolean mute) {
-        super(in, format);
+        super(
+//                in,
+                format);
         this.ins = ins;
         this.audio = audio;
         this.mute = mute;

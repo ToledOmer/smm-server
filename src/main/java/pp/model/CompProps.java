@@ -54,29 +54,38 @@ public class CompProps extends BasicProps {
         return resolution;
     }
 
-    public CompProps(@JsonProperty("in") String in,
-                     @JsonProperty("out") String out,
-                     @JsonProperty("format") String format,
-                     @JsonProperty("audioChannels") int audioChannels,
-                     @JsonProperty("audioCodec") String audioCodec,
-                     @JsonProperty("audioSampleRate") int audioSampleRate,
-                     @JsonProperty("audioBitRate") int audioBitRate,
-                     @JsonProperty("videoCodec") String videoCodec,
-                     @JsonProperty("frames") int frames,
-                     @JsonProperty("per") int per,
-                     @JsonProperty("resolution") int[] resolution,
-                     @JsonProperty("videoBitRate") int videoBitRate) {
-        super(in,
+    public CompProps(
+//            @JsonProperty("in") String in,
+//                     @JsonProperty("out") String out,
+                     @JsonProperty("Format") String format,
+                     @JsonProperty("Audio Channels") String audioChannels,
+                     @JsonProperty("Audio Codec") String audioCodec,
+                     @JsonProperty("Audio Sample Rate") String audioSampleRate,
+                     @JsonProperty("Audio Bit Rate") String audioBitRate,
+                     @JsonProperty("Video Codec") String videoCodec,
+//                     @JsonProperty("frames") String frames,
+//                     @JsonProperty("per") String per,
+                     @JsonProperty("Video Frame Rate") String frameRate,
+
+                     @JsonProperty("Resolutions") String resolution,
+                     @JsonProperty("Video Bit Rate") String videoBitRate) {
+        super(
+//                in,
 //                out,
                 format);
-        this.audioChannels = audioChannels;
+        this.per = Integer.valueOf(frameRate.split("/")[1]);
+        this.frames = Integer.valueOf(frameRate.split("/")[0]);
+        this.audioChannels = Integer.valueOf(audioChannels);
         this.audioCodec = audioCodec;
-        this.audioSampleRate = audioSampleRate;
-        this.audioBitRate = audioBitRate;
+        this.audioSampleRate = Integer.valueOf(audioSampleRate.split(" ")[0])*1000;
+        this.audioBitRate = Integer.valueOf(audioBitRate.split(" ")[0])*1024;
         this.videoCodec = videoCodec;
-        this.frames = frames;
-        this.per = per;
-        this.resolution = resolution;
-        this.videoBitRate = videoBitRate;
+//        this.frames = frames;
+//        this.per = per;
+
+        this.resolution = new int[]{
+                Integer.valueOf(resolution.split(" x ")[0]) ,
+                Integer.valueOf(resolution.split(" x ")[1]) };
+        this.videoBitRate =  Integer.valueOf(videoBitRate.split(" ")[0]) *1024;
     }
 }

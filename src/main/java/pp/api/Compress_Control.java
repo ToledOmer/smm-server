@@ -28,7 +28,7 @@ public class Compress_Control {
     @PostMapping
     public void CompresFile(@Valid @NonNull @RequestBody CompProps prop) throws IOException {
 //    compressService.addProc(prop);
-        compressService.Compress(prop,"");
+//        compressService.Compress(prop,"");
 
     }
 

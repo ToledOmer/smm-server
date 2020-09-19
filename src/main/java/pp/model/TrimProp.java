@@ -30,7 +30,9 @@ public class TrimProp extends BasicProps  {
                     @JsonProperty("minLen") int minLen,
                     @JsonProperty("secLen") int secLen,
                     @JsonProperty("msLen") int msLen) {
-        super(in, format);
+        super(
+//                in,
+                format);
         this.hours = hours;
         this.min = min;
         this.sec = sec;

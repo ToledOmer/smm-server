@@ -8,7 +8,7 @@ public enum BucketName {
         BuckeName = buckeName;
     }
 
-    public String getBuckeName() {
+    public String getBucketName() {
         return BuckeName;
     }
 }

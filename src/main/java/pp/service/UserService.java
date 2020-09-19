@@ -1,7 +1,6 @@
 package pp.service;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import pp.filestore.FileStore;
 import pp.model.UserSMM;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 @Service
@@ -38,6 +36,9 @@ public class UserService {
     public UserSMM getUser(String userEmail) {
         return procDB.getUserByEmail(userEmail);
     }
+    public UserSMM getUser(UUID id) {
+        return procDB.getUserByUUID(id);
+    }
 
 
     public boolean EmailExist(String email) {
@@ -54,10 +55,10 @@ public class UserService {
         if (file.isEmpty()) {
             throw new IllegalStateException("Cannot upload empty file [ " + file.getSize() + "]");
         }
-        String check = file.getContentType();
-        System.out.println("file.getContentType() is " + check);
+//        String check = file.getContentType();
+//        System.out.println("file.getContentType() is " + check);
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        System.out.println("file.getContentType() is " + extension);
+//        System.out.println("file.getContentType() is " + extension);
 
 
         //2. if file is an video
@@ -75,7 +76,7 @@ public class UserService {
         Map<String, String> metadata = extractMetaData(file);
 
         //5. store the video in s3 and update database (userProfileVideoLink) with s3 video link
-        String path = String.format("%s/%s", BucketName.PROFILE_VIDEO.getBuckeName(), user.getId());
+        String path = String.format("%s/%s", BucketName.PROFILE_VIDEO.getBucketName(), user.getId());
         String fileName = String.format("%sUUID-%s", file.getOriginalFilename(), UUID.randomUUID());
         user.setCompFile(fileName);
 
@@ -125,7 +126,7 @@ public class UserService {
             user.setIsConncted(0);
     }
 
-    public String downloadVideo(UUID uuid) {
+    public String getDownloadLink(UUID uuid) {
         UserSMM user = procDB.getUserByUUID(uuid);
         if(user == null){
             throw new IllegalStateException("user doesnt exist");
@@ -134,8 +135,8 @@ public class UserService {
                  uuid,
                 user.getCompFile());
 
-        return fileStore.download(BucketName.PROFILE_VIDEO.getBuckeName(), path);
-
-
+        return fileStore.getDownloadLink(BucketName.PROFILE_VIDEO.getBucketName(), path);
     }
+
+
 }

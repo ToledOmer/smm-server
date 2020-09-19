@@ -21,10 +21,11 @@ public class BasicProps {
         return format;
     }
 
-    public BasicProps(@JsonProperty("in") String in,
+    public BasicProps(
+//            @JsonProperty("in") String in,
 //                      @JsonProperty("out") String out,
                       @JsonProperty("format") String format) {
-        this.in = in;
+//        this.in = in;
 //        this.out = out;
         this.format = format;
     }

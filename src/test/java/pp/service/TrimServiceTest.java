@@ -20,6 +20,20 @@ import static org.junit.Assert.*;
 
 public class TrimServiceTest {
 
+
+    @Test
+    public void cFile(){
+        System.out.println("dasdasd");
+        try {
+            new File("C:\\Users\\Omer\\Desktop\\id1_id2\\omer.mp4").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
     @Test
     public void trimFile() {
     TrimService trimService = new TrimService();
