@@ -10,8 +10,8 @@ import javax.mail.internet.*;
 @Service
 public class SendMail {
 
-
-    public void SendFromGmail(String from , String pass , String download) {
+//TODO - html the sent msg
+    public void SendFromGmail(String from , String pass , String downloadLink) {
 
         Properties props = System.getProperties();
 
@@ -21,7 +21,7 @@ public class SendMail {
         }
         String[] to = { "omertol@post.bgu.ac.il" }; // list of recipient email addresses
         String subject = "Java send mail example";
-        String body = "Welcome to JavaMail!\n"+download;
+        String body = "Welcome to JavaMail!\n  "+downloadLink;
 
         String host = "smtp.gmail.com";
         props.put("mail.smtp.starttls.enable", "true"); // added this line
