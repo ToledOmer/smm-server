@@ -78,6 +78,7 @@ public class UserService {
         //5. store the video in s3 and update database (userProfileVideoLink) with s3 video link
         String path = String.format("%s/%s", BucketName.PROFILE_VIDEO.getBucketName(), user.getId());
         String fileName = String.format("%sUUID-%s", file.getOriginalFilename(), UUID.randomUUID());
+        //the last video the user uploaded
         user.setCompFile(fileName);
 
         try {

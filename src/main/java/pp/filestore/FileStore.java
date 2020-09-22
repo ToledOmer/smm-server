@@ -71,6 +71,7 @@ public class FileStore {
 
     public String getDownloadLink(String bucketName, String path) {
         URL url;
+        String newPath = path;
         try {
             // Set the presigned URL to expire after one hour.
             java.util.Date expiration = new java.util.Date();
@@ -79,12 +80,11 @@ public class FileStore {
             expTimeMillis += 1000 * 60 * 60 * 24;
             expiration.setTime(expTimeMillis);
             // Generate the presigned URL.
-            String newPath = path;
+
             if (path.contains("UUID")) {
-                 newPath = path.substring(0, path.indexOf("UUID"));
+                newPath = path.substring(0, path.indexOf("UUID"));
 
                 RenameFile(bucketName, path, newPath);
-
             }
 
             GeneratePresignedUrlRequest generatePresignedUrlRequest =
@@ -95,6 +95,7 @@ public class FileStore {
         } catch (AmazonServiceException e) {
             throw new IllegalStateException("Failed to get  download link to s3", e);
         }
+
         //return download link
         return url.toString();
     }
@@ -104,8 +105,9 @@ public class FileStore {
         //get the name of the file
         String name = path.split("/")[1].substring(0, path.indexOf("UUID"));
         // removing the uuid
-        name = name.substring(0, name.indexOf("UUID"));
-
+        if (name.contains("UUID")) {
+            name = name.substring(0, name.indexOf("UUID"));
+        }
         //get the user uuid
         String userUUID = path.split("/")[0];
         //path of the new file                                        //users dir must be initialized
@@ -116,8 +118,23 @@ public class FileStore {
         String url = getDownloadLink(bucketName, path);
 //        File f = null;
         try {
-            //cearte file himself
+            System.out.println(abPath);
+
+            //create file himself
+            int j = 1;
+            String extension = name.substring(name.indexOf(".")); //including the dot
+            String noExstension = name.substring(0, name.indexOf("."));
+
+            while (new File(abPath).exists()) {
+                abPath = String.format(System.getProperty("user.dir") + "\\users" + "\\%s\\%s", userUUID,
+                        noExstension + "(" + j + ")" + "." + extension);
+                System.out.println(abPath);
+
+                j++;
+            }
             new File(abPath).createNewFile();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -141,7 +158,7 @@ public class FileStore {
     }
 
 
-    private void RenameFile(String bucketName, String oldPath, String newPath) {
+    public void RenameFile(String bucketName, String oldPath, String newPath) {
         CopyObjectRequest copyObjRequest = new CopyObjectRequest(bucketName,
                 oldPath, bucketName, newPath);
         s3.copyObject(copyObjRequest);

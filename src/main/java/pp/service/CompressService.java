@@ -30,6 +30,8 @@ public class CompressService implements SmmService {
     public final FileStore fileStore;
     public final UserService userService;
     public final SendMail sendMail;
+    public FFmpeg ffmpeg;
+    public FFprobe ffprobe;
 
     @Autowired
     public CompressService(@Qualifier("fakeDB") ProcDB procDB, @Qualifier("simpleExe") ThreadPoolTaskExecutor executor,
@@ -40,6 +42,26 @@ public class CompressService implements SmmService {
         this.executor = executor;
         this.fileStore = fileStore;
         this.userService = userService;
+        constructFFMPEG();
+    }
+
+    private void constructFFMPEG() {
+        String wDir = System.getProperty("user.dir");
+        File f = new File(wDir + "\\ffmpeg.exe");
+        try {
+            ffmpeg = new FFmpeg(f.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        f = new File(wDir + "\\ffprobe.exe");
+        try {
+            ffprobe = new FFprobe(f.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (ffmpeg == null || ffprobe == null) {
+            throw new IllegalStateException("ffmpeg or ffprobe is null");
+        }
     }
 
 
@@ -56,32 +78,13 @@ public class CompressService implements SmmService {
 
     public File compressFile(CompProps prop, String filePath) {
 
-        File f = new File("C:\\ffmpeg-20200715-a54b367-win64-static\\bin\\ffmpeg.exe");
-        FFmpeg ffmpeg = null;
-        try {
-            ffmpeg = new FFmpeg(f.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        f = new File("C:\\ffmpeg-20200715-a54b367-win64-static\\bin\\ffprobe.exe");
-        FFprobe ffprobe = null;
-        try {
-            ffprobe = new FFprobe(f.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         File file = new File(filePath);
-//        String in = file.getAbsolutePath();
-//        in = in.substring(new String("C:\\Users\\Omer\\Desktop\\pp\\").length());
-//        in  = DoToIn(in);
-//        if(f.exists())
-//            System.out.println("sdasddddddddddddddddd");
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd - HH.mm.ss");
         LocalDateTime now = LocalDateTime.now();
 //        System.out.println("start at " + dtf.format(now));
         String name = file.getName().substring(0, file.getName().lastIndexOf("."));
         String out = file.getParent();
-        out = out + "\\" + name + "(compressed)" + "." + prop.getFormat();
+        out = out + "\\" + name + "(compressed)" + dtf.format(now) + "." + prop.getFormat();
         //if the file got
 //        Settings.deleteList.add(new File(out));
 //        Settings.getInOutMap().put(in, out);
@@ -118,12 +121,17 @@ public class CompressService implements SmmService {
             String pathAndName = String.format("%s/%s", id, compressedFile.getName());
             //upload
             fileStore.UploadFile(BucketName.PROFILE_VIDEO.getBucketName(), pathAndName, compressedFile);
+            fileStore.RenameFile(BucketName.PROFILE_VIDEO.getBucketName() ,
+                    String.format("%s/%s", id, downloadedFile.getName())
+                    ,String.format("%s/%s", id, userService.getUser(id).getCompFile())
+                    );
 
+            downloadedFile.delete();
+            compressedFile.delete();
             //generate download link
             String downloadLink = fileStore.getDownloadLink(BucketName.PROFILE_VIDEO.getBucketName(), pathAndName);
-//            System.out.println(downloadLink);
-            // TODO: 19/08/2020   send mail with download + (? prop log )
-            sendMail.SendFromGmail("toledoomer@gmail.com" , "OmerNLP123!", downloadLink);
+
+            sendMail.SendFromGmail("toledoomer@gmail.com", "OmerNLP123!", downloadLink);
         });
     }
 
