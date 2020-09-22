@@ -15,3 +15,9 @@ Web app which using FFMPEG Framework , the web app maing goal is to let users ea
 -  FED - decide what style we should use
 -  create a new gmail for this service ?
 -  server side
+
+
+
+links:
+
+- toggle with state  - https://www.youtube.com/watch?v=x5oiX93DeHA&ab_channel=LevelUpTuts
