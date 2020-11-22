@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @RestController
 public class Combine_Control {
-
+//this is combine class
     private final CombineService combineService;
 
     @Autowired
