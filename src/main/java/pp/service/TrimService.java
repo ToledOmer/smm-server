@@ -35,21 +35,11 @@ public class TrimService implements SmmService {
     }
 
 
-
-
-
     public TrimService() {
         this.procDB = null;
         this.executor = null;
     }
 
-
-
-//    public int addProc(CompProps cProp){
-//
-//        return procDB.insertProc(cProp);
-//
-//    }
     public List<CompProps> getAll(){
 
         return procDB.getAll();
@@ -59,8 +49,6 @@ public class TrimService implements SmmService {
     public int getSizeOfDB(){
         return procDB.getSize();
     }
-    private int t = 0;
-
 
     public void trimFile(TrimProp tprop) {
 
@@ -87,13 +75,9 @@ public class TrimService implements SmmService {
         File file = new File(tprop.getIn());
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-//        System.out.println("start at " + dtf.format(now));
         String out = file.getParent();
-//        String fff = file.getName().substring(file.getName().indexOf("."));
-//        System.err.println(fff);
         String name = file.getName().substring(0, file.getName().indexOf("."));
         out = out + "\\" + name + "(Trimmed)"
-//                + (t++)
                 + "." + tprop.getFormat();
         FFmpegBuilder builder;
         String in =tprop.getIn();

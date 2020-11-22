@@ -86,8 +86,6 @@ public class CompressService implements SmmService {
         String out = file.getParent();
         out = out + "\\" + name + "(compressed)" + dtf.format(now) + "." + prop.getFormat();
         //if the file got
-//        Settings.deleteList.add(new File(out));
-//        Settings.getInOutMap().put(in, out);
         FFmpegBuilder builder = new FFmpegBuilder()
                 .setInput(filePath) // Filename, or a FFmpegProbeResult
                 .overrideOutputFiles(true) // Override the output if it exists
