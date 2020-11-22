@@ -1,0 +1,23 @@
+#file path should be : src/main/resources/application.properties
+
+
+threadpool.corepoolsize=5
+threadpool.maxpoolsize=10
+user.normalActions=3
+user.premActions=10
+
+#can be downloaded from  - https://ffmpeg.org/download.html
+user.ffprobePath = "ffprobe.exe" 
+
+#can be downloaded from  - https://ffmpeg.org/download.html
+user.ffmpegPath = "ffmpeg.exe"
+
+#for example - 150MB
+spring.servlet.multipart.max-file-size=
+spring.servlet.multipart.max-request-size=
+
+
+server.aws.accessKey="This is my aws accessKey"
+server.aws.secretKey="This is my aws secretKey"
+
+
